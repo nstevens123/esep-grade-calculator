@@ -1,9 +1,7 @@
 package esepunittests
 
 type GradeCalculator struct {
-	assignments []Grade
-	exams       []Grade
-	essays      []Grade
+	grades []Grade
 }
 
 type GradeType int
@@ -32,9 +30,7 @@ type Grade struct {
 
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
-		assignments: make([]Grade, 0),
-		exams:       make([]Grade, 0),
-		essays:      make([]Grade, 0),
+		grades: make([]Grade, 0),
 	}
 }
 
@@ -55,44 +51,48 @@ func (gc *GradeCalculator) GetFinalGrade() string {
 }
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) {
-	switch gradeType {
-	case Assignment:
-		gc.assignments = append(gc.assignments, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Assignment,
-		})
-	case Exam:
-		gc.exams = append(gc.exams, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Exam,
-		})
-	case Essay:
-		gc.essays = append(gc.essays, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Essay,
-		})
-	}
+	gc.grades = append(gc.grades, Grade{
+		Name:  name,
+		Grade: grade,
+		Type:  gradeType,
+	})
 }
 
 func (gc *GradeCalculator) calculateNumericalGrade() int {
-	assignment_average := computeAverage(gc.assignments)
-	exam_average := computeAverage(gc.exams)
-	essay_average := computeAverage(gc.essays)
-	//fmt.Println(assignment_average)
-	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
+	grade_average := computeWieghtedAverage(gc.grades)
 
-	return int(weighted_grade)
+	//fmt.Println(assignment_average)
+	//weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
+
+	return grade_average
 }
 
-func computeAverage(grades []Grade) int {
-	sum := 0
+func computeWieghtedAverage(grades []Grade) int {
+	assignment_sum := 0.0
+	assignment_count := 0
+	exam_sum := 0.0
+	exam_count := 0
+	essay_sum := 0.0
+	essay_count := 0
 
 	for _, val := range grades {
-		sum += val.Grade
+
+		switch val.Type {
+		case Assignment:
+			assignment_sum += float64(val.Grade) * .5
+			assignment_count += 1
+		case Exam:
+			exam_sum += float64(val.Grade) * .35
+			exam_count += 1
+		case Essay:
+			essay_sum += float64(val.Grade) * .15
+			essay_count += 1
+		}
+
 	}
 
-	return sum / len(grades)
+	return int(
+		assignment_sum/float64(assignment_count) +
+			exam_sum/float64(exam_count) +
+			essay_sum/float64(essay_count))
 }
