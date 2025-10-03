@@ -40,7 +40,7 @@ func NewGradeCalculator() *GradeCalculator {
 
 func (gc *GradeCalculator) GetFinalGrade() string {
 	numericalGrade := gc.calculateNumericalGrade()
-
+	//fmt.Println(numericalGrade)
 	if numericalGrade >= 90 {
 		return "A"
 	} else if numericalGrade >= 80 {
@@ -80,8 +80,8 @@ func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType)
 func (gc *GradeCalculator) calculateNumericalGrade() int {
 	assignment_average := computeAverage(gc.assignments)
 	exam_average := computeAverage(gc.exams)
-	essay_average := computeAverage(gc.exams)
-
+	essay_average := computeAverage(gc.essays)
+	//fmt.Println(assignment_average)
 	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
 
 	return int(weighted_grade)
@@ -90,8 +90,8 @@ func (gc *GradeCalculator) calculateNumericalGrade() int {
 func computeAverage(grades []Grade) int {
 	sum := 0
 
-	for grade, _ := range grades {
-		sum += grade
+	for _, val := range grades {
+		sum += val.Grade
 	}
 
 	return sum / len(grades)
