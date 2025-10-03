@@ -49,6 +49,14 @@ func (gc *GradeCalculator) GetFinalGrade() string {
 
 	return "F"
 }
+func (gc *GradeCalculator) GetFinalGradePF() string {
+	numericalGrade := gc.calculateNumericalGrade()
+	//fmt.Println(numericalGrade)
+	if numericalGrade >= 70 {
+		return "P"
+	}
+	return "F"
+}
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) {
 	gc.grades = append(gc.grades, Grade{
@@ -59,7 +67,7 @@ func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType)
 }
 
 func (gc *GradeCalculator) calculateNumericalGrade() int {
-	grade_average := computeWieghtedAverage(gc.grades)
+	grade_average := computeWeightedAverage(gc.grades)
 
 	//fmt.Println(assignment_average)
 	//weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
@@ -67,7 +75,7 @@ func (gc *GradeCalculator) calculateNumericalGrade() int {
 	return grade_average
 }
 
-func computeWieghtedAverage(grades []Grade) int {
+func computeWeightedAverage(grades []Grade) int {
 	assignment_sum := 0.0
 	assignment_count := 0
 	exam_sum := 0.0
